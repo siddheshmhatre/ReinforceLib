@@ -1,7 +1,7 @@
 import numpy as np
 from gym.envs.toy_text import discrete
 
-class GamblersProblem(discrete.DescreteEnv):
+class GamblersProblem(discrete.DiscreteEnv):
 
 	"""
 	GamblersProblem is an environment from Sutton and Barto
@@ -20,16 +20,17 @@ class GamblersProblem(discrete.DescreteEnv):
 
 		nS = target + 1
 		nA = target / 2  + 1
+		print nA
 		P = {}
 		reward = lambda s: 1.0 if s == target else 0.0
-		is_done = lambda s: if s == 0 or s == target
+		is_done = lambda s: s == 0 or s == target
 
 		for s in range(target+1):
 			
 			if s == target or s == 0:
-				P = {a : [(1.0, s, reward(s), True)] for a in range(nA)}
+				P[s] = {a : [(1.0, s, reward(s), True)] for a in range(nA)}
 			else:
-				P = {a : [(1.0, s, reward(s), False)] for a in range(nA)}
+				P[s] = {a : [(1.0, s, reward(s), False)] for a in range(nA)}
 
 				for a in range(1, min(s, target - s) + 1):
 					P[s][a] = [(p_h, s + a, reward(s), is_done(s + a)), (1 - p_h, s - a, reward(s), is_done(s - a))] 

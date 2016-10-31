@@ -27,14 +27,14 @@ class GridWorld(discrete.DiscreteEnv):
 
 		P = {s : {a : [] for a in range(nA)} for s in range(nS)}
 		grid = np.arange(nS).reshape(shape)
-		it = np.nditer(grid, flags = ['multi-index'])
+		it = np.nditer(grid, flags = ['multi_index'])
 
 		while not it.finished:
 
 			s = it.iterindex
 			y, x = it.multi_index
 
-			is_done = lambda x: if x == 0 or x == nS - 1 
+			is_done = lambda x: x == 0 or x == nS - 1 
 			reward = 0.0 if is_done(s) else -1.0 
 
 			if is_done(s):
