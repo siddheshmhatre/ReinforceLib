@@ -20,7 +20,6 @@ class GamblersProblem(discrete.DiscreteEnv):
 
 		nS = target + 1
 		nA = target / 2  + 1
-		print nA
 		P = {}
 		reward = lambda s: 1.0 if s == target else 0.0
 		is_done = lambda s: s == 0 or s == target
@@ -30,8 +29,7 @@ class GamblersProblem(discrete.DiscreteEnv):
 			if s == target or s == 0:
 				P[s] = {a : [(1.0, s, reward(s), True)] for a in range(nA)}
 			else:
-				P[s] = {a : [(1.0, s, reward(s), False)] for a in range(nA)}
-
+				P[s] = {}
 				for a in range(1, min(s, target - s) + 1):
 					P[s][a] = [(p_h, s + a, reward(s), is_done(s + a)), (1 - p_h, s - a, reward(s), is_done(s - a))] 
 

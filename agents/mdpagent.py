@@ -13,9 +13,10 @@ class DPAgent(object):
 		V = np.zeros(self.env.nS)
 
 		def get_actionvalue(V,s):
-			A = np.zeros(self.env.nA)
+			A = np.full(self.env.nA, -float('inf'))
 
-			for a in range(self.env.nA):
+			for a in self.env.P[s]:
+				A[a] = 0
 				for prob, next_state, reward, _ in self.env.P[s][a]:
 					A[a] += prob * (reward + self.gamma * V[next_state])
 
