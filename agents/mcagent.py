@@ -26,7 +26,7 @@ class MCAgent(object):
 
 		return get_action, policy
 
-	def on_policy_epsilon_greedy(self, episodes = None, epsilon = 0.1):
+	def on_policy_epsilon_greedy(self, episodes = None, epsilon = 0.1, epsilon_decay = False):
 
 		if episodes == None:
 			raise ValueError('Enter number of episodes')
@@ -54,7 +54,11 @@ class MCAgent(object):
 			episode = []
 
 			while not done:
-				action = get_action(state, i)
+				if epsilon_decay:
+					action = get_action(state, i)
+				else:
+					action = get_action(state, 1)
+
 				next_state, reward, done, _ = self.env.step(action)
 				episode.append((state, action, reward))
 				state = next_state
