@@ -2,41 +2,14 @@ from __future__ import print_function
 import numpy as np
 import sys
 from collections import defaultdict
+from policy import epsilon_greedy_policy, random_policy
 
 class MCAgent(object):
 
 	def __init__(self, env, gamma = 0.9):
 		self.env = env
 		self.gamma = 0.9
-
-	def epsilon_greedy_policy(self, Q, epsilon = 0.1, nA = None):
-
-		# Function that returns the probability distribution over 
-		# actions for a particular state
-		def policy(state, episode_no = float('inf')):
-			probs = np.ones(nA, dtype = float) * ((epsilon / episode_no) / nA)
-			best_action = np.argmax(Q[state])
-			probs[best_action] += (1.0 - (epsilon / episode_no))
-			return probs
-
-		# Function that returns action based on probability distribution
-		def get_action(state, episode_no = float('inf')):
-			probs = policy(state, episode_no)
-			return np.random.choice(np.arange(len(probs)), p = probs)
-
-		return get_action, policy
-
-	def random_policy(self, nA = None):
-
-		def policy(state, episode_no = None):
-			return np.ones(nA, dtype = float) / nA
-			
-		def get_action(state, episode_no = None):
-			probs = policy(state)
-			return np.random.choice(np.arange(len(probs)), p = probs)
-
-		return get_action, policy
-
+	
 	def on_policy_epsilon_greedy(self, episodes = None, epsilon = 0.1, epsilon_decay = False):
 
 		if episodes == None:
@@ -51,7 +24,7 @@ class MCAgent(object):
 		returns_count = defaultdict(float)
 
 		# Get policy
-		get_action, policy = self.epsilon_greedy_policy(Q, epsilon, self.env.action_space.n)
+		get_action, policy = epsilon_greedy_policy(Q, epsilon, nA = self.env.action_space.n)
 
 		for i in range(1, episodes + 1):
 			
@@ -107,9 +80,9 @@ class MCAgent(object):
 		# Choose behavior policy as epsilon greedy if epsilon is not None else
 		# choose it as uniformly random policy (uniform over action space)
 		if epsilon != None:
-			get_behavior_action, behavior_policy = self.epsilon_greedy_policy(Q, epsilon, self.env.action_space.n)
+			get_behavior_action, behavior_policy = epsilon_greedy_policy(Q, epsilon, self.env.action_space.n)
 		else:
-			get_behavior_action, behavior_policy = self.random_policy(self.env.action_space.n)
+			get_behavior_action, behavior_policy = random_policy(self.env.action_space.n)
 
 		# Target deterministic greedy policy
 		get_target_action, target_policy = self.epsilon_greedy_policy(Q, epsilon = 0, nA = self.env.action_space.n)
